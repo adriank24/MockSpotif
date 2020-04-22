@@ -1,4 +1,4 @@
-package com.example.Spotify;
+package com.example.Spotify.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
