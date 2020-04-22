@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-SpotifyApplication<Spotify>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "com.example.Spotify.SpotifyApplication",
+            "projectName": "Spotify",
+            "args": ""
+        }
+    ]
+}
