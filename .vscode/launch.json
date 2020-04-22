@@ -9,6 +9,16 @@
             "mainClass": "com.example.Spotify.SpotifyApplication",
             "projectName": "Spotify",
             "args": ""
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-SpotifyApplication<Spotify>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "MockSpotify.Spotify.SpotifyApplication",
+            "projectName": "Spotify",
+            "args": ""
         }
     ]
 }
