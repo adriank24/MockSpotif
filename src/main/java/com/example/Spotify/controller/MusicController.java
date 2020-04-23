@@ -1,5 +1,7 @@
 package com.example.Spotify.controller;
 
+import java.util.List;
+
 import com.example.Spotify.entities.Song;
 import com.example.Spotify.repositories.SongRepository;
 
@@ -41,23 +43,26 @@ public class MusicController {
         }
     }
 
-    // @GetMapping(path="/song/get/{id}")
-    // public @ResponseBody ResponseEntity<Song> getSong(@PathVariable String name) {
-    //     try {
-    //         Song songData = songRepository.findById(id).get();
-    //         return ResponseEntity.ok(userData); 
-    //     }catch (Exception e) {
-    //         return ResponseEntity.notFound().build();
-    //     }
-    // }
+    @GetMapping(path="/song/get/{name}")
+    public @ResponseBody ResponseEntity<Song> getSong(@PathVariable String name) {
+        try {
+            List<Song> song = songRepository.findByName(name);
+            return ResponseEntity.ok(song.get(0)); 
+        }catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
+    
     @PutMapping(path="/song/update/{id}")
     public @ResponseBody ResponseEntity<Song> updateSong(@RequestParam Integer artist,
     @RequestParam Integer album, @RequestParam Integer label, @RequestParam Integer genre,
-    @RequestParam Double duration, @RequestParam String name, @RequestParam Integer played){
+    @RequestParam Double duration, @RequestParam String name, @RequestParam Integer played
+    ,@PathVariable int id){
   
         try {
             Song songData = new Song();
+            songData.setId(id);
             songData.setArtist(artist);
             songData.setAlbum(album);
             songData.setLabel(label);
