@@ -8,7 +8,7 @@ import javax.persistence.Id;
 @Entity
 public class HistorySong {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private Integer id_history;
     private Integer id_song;

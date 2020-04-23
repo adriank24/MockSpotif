@@ -45,20 +45,20 @@ public class MainController {
 
   @GetMapping(path="/user/{id}")
   public @ResponseBody ResponseEntity<User> getUser(@PathVariable int id) {
-	try {
-    User userData = userRepository.findById(id).get();
-    String userEmail=userData.getEmail();
-    String userName = userData.getName();
-    String userPw = userData.getPassword();
+    try {
+      User userData = userRepository.findById(id).get();
+      String userEmail=userData.getEmail();
+      String userName = userData.getName();
+      String userPw = userData.getPassword();
 
-    temp.setEmail(userEmail);
-    temp.setName(userName);
-    temp.setPassword(userPw);
+      temp.setEmail(userEmail);
+      temp.setName(userName);
+      temp.setPassword(userPw);
 
-		return ResponseEntity.ok(userData); 
-	}catch (Exception e) {
-		return ResponseEntity.notFound().build();
-	}
+      return ResponseEntity.ok(userData); 
+    }catch (Exception e) {
+      return ResponseEntity.notFound().build();
+    }
   }
 
   @PutMapping(path="/subscribe/{id}")

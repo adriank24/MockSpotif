@@ -26,7 +26,8 @@ public class GenreController {
   public @ResponseBody ResponseEntity<Genre> addNewGenre (@RequestParam String name) {
     try {
       Genre genreData = new Genre();
-    	genreData.setName(name);
+      genreData.setName(name);
+      genreRepo.save(genreData);
         return ResponseEntity.ok(genreData); 
 	  }catch (Exception e) {
 		  return ResponseEntity.notFound().build();

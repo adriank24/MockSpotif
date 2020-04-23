@@ -8,11 +8,11 @@ import javax.persistence.Id;
 @Entity
 public class Playlist {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
     // private Date tgl_dibuat;
-    private Integer user_id;
+    private Integer user;
 
     public Integer getId() {
         return this.id;
@@ -38,12 +38,12 @@ public class Playlist {
     //     this.tgl_dibuat = tgl_dibuat;
     // }
 
-    public Integer getUser_id() {
-        return this.user_id;
+    public Integer getUser() {
+        return this.user;
     }
 
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
+    public void setUser(Integer user) {
+        this.user = user;
     }
     
 }

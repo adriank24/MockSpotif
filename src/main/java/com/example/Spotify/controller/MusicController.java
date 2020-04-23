@@ -96,7 +96,6 @@ public class MusicController {
     @RequestParam Integer album, @RequestParam Integer label, @RequestParam Integer genre,
     @RequestParam Double duration, @RequestParam String name, @RequestParam Integer played
     ,@PathVariable int id){
-  
         try {
             Song songData = new Song();
             songData.setId(id);

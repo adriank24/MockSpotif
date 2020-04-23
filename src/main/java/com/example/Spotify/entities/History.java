@@ -8,7 +8,7 @@ import javax.persistence.Id;
 @Entity
 public class History {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private Integer user_id;
     private Integer time_played;

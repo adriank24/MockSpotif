@@ -8,4 +8,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface ArtistRepository extends CrudRepository<Artist,Integer>{
     List<Artist> findByName(String name);
+    List<Artist> findByLabel(Integer label);
 }

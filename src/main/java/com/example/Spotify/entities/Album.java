@@ -9,7 +9,7 @@ import javax.persistence.Id;
 @Entity
 public class Album {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
     private Integer artist;

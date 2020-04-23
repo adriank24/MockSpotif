@@ -28,6 +28,7 @@ public class ArtistController {
       Artist artistData = new Artist();
         artistData.setName(name);
         artistData.setLabel(label);
+        artistRepo.save(artistData);
         return ResponseEntity.ok(artistData); 
 	  }catch (Exception e) {
 		  return ResponseEntity.notFound().build();
