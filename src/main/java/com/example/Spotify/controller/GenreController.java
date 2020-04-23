@@ -18,8 +18,9 @@ import com.example.Spotify.repositories.GenreRepository;
 @Controller // This means that this class is a Controller
 @RequestMapping(path="/spotif") // This means URL's start with /demo (after Application path)
 public class GenreController {
+  @Autowired
 
-    public GenreRepository genreRepo;
+    private GenreRepository genreRepo;
 
     @PostMapping(path="/genre/add") // Map ONLY POST Requests
   public @ResponseBody ResponseEntity<Genre> addNewGenre (@RequestParam String name) {
