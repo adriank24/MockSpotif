@@ -13,11 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.Spotify.entities.User;
-import com.example.Spotify.entities.Genre;
-import com.example.Spotify.entities.Label;
 import com.example.Spotify.repositories.UserRepository;
-import com.example.Spotify.repositories.GenreRepository;
-import com.example.Spotify.repositories.LabelRepository;
 
 
 
@@ -96,6 +92,5 @@ public class MainController {
         }
         
     }
-
 	  
 }

@@ -36,8 +36,8 @@ public class MusicController {
             songData.setDuration(duration);
             songData.setName(name);
             songData.setPlayed(played);
-                songRepository.save(songData);
-                return ResponseEntity.ok(songData);
+            songRepository.save(songData);
+            return ResponseEntity.ok(songData);
         }catch (Exception e){
             return ResponseEntity.notFound().build();
         }
