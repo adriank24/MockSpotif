@@ -13,13 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.Spotify.entities.User;
-import com.example.Spotify.entities.Genre;
-import com.example.Spotify.entities.Label;
 import com.example.Spotify.repositories.UserRepository;
-import com.example.Spotify.repositories.GenreRepository;
-import com.example.Spotify.repositories.LabelRepository;
-
-
 
 @Controller // This means that this class is a Controller
 @RequestMapping(path="/spotif") // This means URL's start with /demo (after Application path)
@@ -65,7 +59,28 @@ public class MainController {
 	}
   }
 
-  @PutMapping(path="/subscribe/{id}")
+  @PutMapping(path="/user/subscribe/{id}")
+  public @ResponseBody ResponseEntity<User> subscribe(@PathVariable int id) {
+	  try {
+      User userData = new User();
+      String status = "Premium";
+      String name = temp.getName();
+      String email = temp.getEmail();
+      String pw = temp.getPassword();
+
+      userData.setId(id);
+    	userData.setName(name);
+      userData.setEmail(email);
+      userData.setPassword(pw);
+      userData.setStatus(status);
+      userRepository.save(userData);
+      return ResponseEntity.ok(userData);   
+		}catch (Exception e) {
+		  return ResponseEntity.notFound().build();
+		}
+  }
+
+  @PutMapping(path="/user/update/{id}")
   public @ResponseBody ResponseEntity<User> updateUser(@PathVariable int id) {
 	  try {
       User userData = new User();
@@ -87,7 +102,7 @@ public class MainController {
   }
   
   @DeleteMapping(path="/user/delete/{id}")
-    public @ResponseBody ResponseEntity<Void> deleteSong(@PathVariable int id){
+    public @ResponseBody ResponseEntity<Void> deleteUser(@PathVariable int id){
         try {
             userRepository.deleteById(id);
             return ResponseEntity.ok().build();
