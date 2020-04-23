@@ -81,14 +81,11 @@ public class MainController {
   }
 
   @PutMapping(path="/user/update/{id}")
-  public @ResponseBody ResponseEntity<User> updateUser(@PathVariable int id) {
+  public @ResponseBody ResponseEntity<User> updateUser(@PathVariable int id, @RequestParam String name,
+  @RequestParam String email, @RequestParam String pw) {
 	  try {
+      String status = "Free";
       User userData = new User();
-      String status = "Premium";
-      String name = temp.getName();
-      String email = temp.getEmail();
-      String pw = temp.getPassword();
-
       userData.setId(id);
     	userData.setName(name);
       userData.setEmail(email);
