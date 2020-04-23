@@ -70,18 +70,32 @@ public class MainController {
 	  try {
       User userData = new User();
       String status = "Premium";
+      String name = temp.getName();
+      String email = temp.getEmail();
+      String pw = temp.getPassword();
+
       userData.setId(id);
-    	userData.setName(temp.getName());
-      userData.setEmail(temp.getEmail());
-      userData.setPassword(temp.getPassword());
+    	userData.setName(name);
+      userData.setEmail(email);
+      userData.setPassword(pw);
       userData.setStatus(status);
-        userRepository.save(userData);
-        return ResponseEntity.ok(userData);   
+      userRepository.save(userData);
+      return ResponseEntity.ok(userData);   
 		}catch (Exception e) {
 		  return ResponseEntity.notFound().build();
 		}
   }
   
+  @DeleteMapping(path="/user/delete/{id}")
+    public @ResponseBody ResponseEntity<Void> deleteSong(@PathVariable int id){
+        try {
+            userRepository.deleteById(id);
+            return ResponseEntity.ok().build();
+        }catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+        
+    }
 
 	  
 }
