@@ -55,7 +55,7 @@ public class ArtistController {
     }
 
     @PutMapping(path="/genre/update/{id}")
-    public @ResponseBody ResponseEntity<Artist> updateGenre(@PathVariable int id, @RequestParam String name,
+    public @ResponseBody ResponseEntity<Artist> updateArtist(@PathVariable int id, @RequestParam String name,
     @RequestParam int label) {
         try {
         Artist artistData = new Artist();

@@ -22,12 +22,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class MusicController {
     @Autowired
     private SongRepository songRepository;
+
+    public Song temp;
     
     @PostMapping(path="/song/add")
     public @ResponseBody ResponseEntity<Song> addNewSong(@RequestParam Integer artist,
     @RequestParam Integer album, @RequestParam Integer label, @RequestParam Integer genre,
-    @RequestParam Double duration, @RequestParam String name, @RequestParam Integer played){
+    @RequestParam Double duration, @RequestParam String name){
         try{
+            int played =0 ;
             Song songData = new Song();
             songData.setArtist(artist);
             songData.setAlbum(album);
@@ -43,14 +46,49 @@ public class MusicController {
         }
     }
 
+    // Search Lagu
     @GetMapping(path="/song/get/{name}")
-    public @ResponseBody ResponseEntity<Song> getSong(@PathVariable String name) {
+    public @ResponseBody ResponseEntity<Song> getSongbyName(@PathVariable String name) {
         try {
             List<Song> song = songRepository.findByName(name);
+            temp=song.get(0);
             return ResponseEntity.ok(song.get(0)); 
         }catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+
+    // //Milih Lagu, by id
+    // @GetMapping(path="/song/get/{id}")
+    // public @ResponseBody ResponseEntity<Song> selectSong(@PathVariable int id) {
+    //     try {
+    //         Song songData = songRepository.findById(id).get();
+            
+    //         return ResponseEntity.ok(songData); 
+    //     }catch (Exception e) {
+    //         return ResponseEntity.notFound().build();
+    //     }
+    // }
+
+    //play lagu
+    @PutMapping(path="/song/play/{id}")
+    public @ResponseBody ResponseEntity<Song> playSong(@PathVariable int id){
+        try {
+            Song songData = new Song();
+            songData.setId(id);
+            songData.setArtist(temp.getArtist());
+            songData.setAlbum(temp.getAlbum());
+            songData.setLabel(temp.getLabel());
+            songData.setGenre(temp.getGenre());
+            songData.setDuration(temp.getDuration());
+            songData.setName(temp.getName());
+            songData.setPlayed(temp.getPlayed()+1);
+            songRepository.save(songData);
+            return ResponseEntity.ok().build();
+          }catch (Exception e) {
+            return ResponseEntity.notFound().build();
+          }
     }
 
     @PutMapping(path="/song/update/{id}")
