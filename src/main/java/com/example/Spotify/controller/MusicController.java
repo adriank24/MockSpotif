@@ -72,18 +72,13 @@ public class MusicController {
     // }
 
     //play lagu
-    @PutMapping(path="/song/play/{id}")
-    public @ResponseBody ResponseEntity<Song> playSong(@PathVariable int id){
+    @PutMapping(path="/song/play/{name}")
+    public @ResponseBody ResponseEntity<Song> playSong(@PathVariable String name){
         try {
-            Song songData = new Song();
-            songData.setId(id);
-            songData.setArtist(temp.getArtist());
-            songData.setAlbum(temp.getAlbum());
-            songData.setLabel(temp.getLabel());
-            songData.setGenre(temp.getGenre());
-            songData.setDuration(temp.getDuration());
-            songData.setName(temp.getName());
-            songData.setPlayed(temp.getPlayed()+1);
+            List<Song> song = songRepository.findByName(name);
+            Song songData = song.get(0);
+            Integer temp = songData.getPlayed();
+            songData.setPlayed(temp+1);
             songRepository.save(songData);
             return ResponseEntity.ok().build();
           }catch (Exception e) {

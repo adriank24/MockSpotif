@@ -54,17 +54,18 @@ public class GenreController {
         
     }
 
-    // @PutMapping(path="/genre/update/{id}")
-    // public @ResponseBody ResponseEntity<Genre> updateGenre(@PathVariable int id, @RequestParam String name) {
-    //     try {
-    //     Genre genreData = new Genre();
-    //     genreData.setId(id);
-    //     genreData.setName(name);
-    //     return ResponseEntity.ok(genreData);   
-    //       }catch (Exception e) {
-    //         return ResponseEntity.notFound().build();
-    //       }
-    // }
+    @PutMapping(path="/genre/update/{id}")
+    public @ResponseBody ResponseEntity<Genre> updateGenre(@PathVariable int id, @RequestParam String name) {
+        try {
+        Genre genreData = new Genre();
+        genreData.setId(id);
+        genreData.setName(name);
+        genreRepo.save(genreData);
+        return ResponseEntity.ok(genreData);   
+          }catch (Exception e) {
+            return ResponseEntity.notFound().build();
+          }
+    }
 
 
 

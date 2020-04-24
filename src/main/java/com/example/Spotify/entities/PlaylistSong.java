@@ -10,8 +10,8 @@ public class PlaylistSong {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Integer song_id;
-    private Integer playlist_id;
+    private Integer songId;
+    private Integer playlistId;
 
     public Integer getId() {
         return this.id;
@@ -21,20 +21,20 @@ public class PlaylistSong {
         this.id = id;
     }
 
-    public Integer getSong_id() {
-        return this.song_id;
+    public Integer getSongId() {
+        return this.songId;
     }
 
-    public void setSong_id(Integer song_id) {
-        this.song_id = song_id;
+    public void setSong_id(Integer songId) {
+        this.songId = songId;
     }
 
-    public Integer getPlaylist_id() {
-        return this.playlist_id;
+    public Integer getPlaylistId() {
+        return this.playlistId;
     }
 
-    public void setPlaylist_id(Integer playlist_id) {
-        this.playlist_id = playlist_id;
+    public void setPlaylist_id(Integer playlistId) {
+        this.playlistId = playlistId;
     }
 
 }

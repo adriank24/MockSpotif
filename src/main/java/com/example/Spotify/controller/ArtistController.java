@@ -37,11 +37,11 @@ public class ArtistController {
 
   @GetMapping(path="/artist/get")
   public @ResponseBody ResponseEntity<Iterable<Artist>> getAllArtist() {
-	try {
-	    return ResponseEntity.ok(artistRepo.findAll()); 
-	}catch (Exception e) {
-		return ResponseEntity.notFound().build();
-	}
+    try {
+        return ResponseEntity.ok(artistRepo.findAll()); 
+    }catch (Exception e) {
+      return ResponseEntity.notFound().build();
+    }
   }
 
   @DeleteMapping(path="/artist/delete/{id}")
@@ -55,7 +55,7 @@ public class ArtistController {
         
     }
 
-    @PutMapping(path="/genre/update/{id}")
+    @PutMapping(path="/artist/update/{id}")
     public @ResponseBody ResponseEntity<Artist> updateArtist(@PathVariable int id, @RequestParam String name,
     @RequestParam int label) {
         try {
@@ -63,6 +63,7 @@ public class ArtistController {
         artistData.setId(id);
         artistData.setName(name);
         artistData.setLabel(label);
+        artistRepo.save(artistData);
         return ResponseEntity.ok(artistData);   
           }catch (Exception e) {
             return ResponseEntity.notFound().build();
