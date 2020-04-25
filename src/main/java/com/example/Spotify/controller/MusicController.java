@@ -2,9 +2,15 @@ package com.example.Spotify.controller;
 
 import java.util.List;
 
+import com.example.Spotify.entities.Album;
 import com.example.Spotify.entities.Artist;
+import com.example.Spotify.entities.Genre;
+import com.example.Spotify.entities.Label;
 import com.example.Spotify.entities.Song;
+import com.example.Spotify.repositories.AlbumRepository;
 import com.example.Spotify.repositories.ArtistRepository;
+import com.example.Spotify.repositories.GenreRepository;
+import com.example.Spotify.repositories.LabelRepository;
 import com.example.Spotify.repositories.SongRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +30,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class MusicController {
     @Autowired
     private SongRepository songRepository;
+    
     @Autowired
     private ArtistRepository artistRepository;
+
+    @Autowired
+    private AlbumRepository albumRepository;
+    
+    @Autowired
+    private LabelRepository labelRepository;
+
+    @Autowired
+    private GenreRepository genreRepository;
+
     public Song temp;
     
     @PostMapping(path="/song/add")
@@ -37,9 +54,12 @@ public class MusicController {
             Song songData = new Song();
             Artist artistData = artistRepository.findById(artist).get();
             songData.setArtist(artistData);
-            songData.setAlbum(album);
-            songData.setLabel(label);
-            songData.setGenre(genre);
+            Album albumData = albumRepository.findById(album).get();
+            songData.setAlbum(albumData);
+            Label labelData = labelRepository.findById(label).get();
+            songData.setLabel(labelData);
+            Genre genreData = genreRepository.findById(genre).get();
+            songData.setGenre(genreData);
             songData.setDuration(duration);
             songData.setName(name);
             songData.setPlayed(played);
@@ -62,6 +82,29 @@ public class MusicController {
         }
     }
 
+    @GetMapping(path="/song/get/artist/{name}")
+    public @ResponseBody ResponseEntity<List<Song>> getSongbyArtist(@PathVariable String name){
+        try{
+            List<Artist> artistData= artistRepository.findByName(name);
+            List<Song> songData = songRepository.findByArtist(artistData.get(0));
+
+            return ResponseEntity.ok(songData);
+        }catch(Exception e){
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping(path="/song/get/album/{name}")
+    public @ResponseBody ResponseEntity<List<Song>> getSongbyAlbum(@PathVariable String name){
+        try{
+            Album albumData= albumRepository.findByName(name);
+            List<Song> songData = songRepository.findByAlbum(albumData);
+
+            return ResponseEntity.ok(songData);
+        }catch(Exception e){
+            return ResponseEntity.notFound().build();
+        }
+    }
 
 
     // //Milih Lagu, by id
@@ -101,9 +144,12 @@ public class MusicController {
             songData.setId(id);
             Artist artistData = artistRepository.findById(artist).get();
             songData.setArtist(artistData);
-            songData.setAlbum(album);
-            songData.setLabel(label);
-            songData.setGenre(genre);
+            Album albumData = albumRepository.findById(album).get();
+            songData.setAlbum(albumData);
+            Label labelData = labelRepository.findById(label).get();
+            songData.setLabel(labelData);
+            Genre genreData = genreRepository.findById(genre).get();
+            songData.setGenre(genreData);
             songData.setDuration(duration);
             songData.setName(name);
             songData.setPlayed(played);

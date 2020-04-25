@@ -24,12 +24,21 @@ public class Song implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Integer album;
-    private Integer label;
-    private Integer genre;
     private double duration;
     private String name;
     private Integer played;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name= "genre", nullable = false)
+    private Genre genre;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name= "label", nullable = false)
+    private Label label;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name= "album", nullable = false)
+    private Album album;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name= "artist", nullable = false)
@@ -52,27 +61,30 @@ public class Song implements Serializable{
         this.artist = artist;
     }
 
-    public Integer getAlbum() {
-        return this.album;
+    @JsonManagedReference
+    public Album getAlbum() {
+        return album;
     }
 
-    public void setAlbum(Integer album) {
+    public void setAlbum(Album album) {
         this.album = album;
     }
 
-    public Integer getLabel() {
+    @JsonManagedReference
+    public Label getLabel() {
         return this.label;
     }
 
-    public void setLabel(Integer label) {
+    public void setLabel(Label label) {
         this.label = label;
     }
 
-    public Integer getGenre() {
+    @JsonManagedReference
+    public Genre getGenre() {
         return this.genre;
     }
 
-    public void setGenre(Integer genre) {
+    public void setGenre(Genre genre) {
         this.genre = genre;
     }
 
