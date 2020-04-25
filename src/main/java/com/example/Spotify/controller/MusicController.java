@@ -2,7 +2,9 @@ package com.example.Spotify.controller;
 
 import java.util.List;
 
+import com.example.Spotify.entities.Artist;
 import com.example.Spotify.entities.Song;
+import com.example.Spotify.repositories.ArtistRepository;
 import com.example.Spotify.repositories.SongRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class MusicController {
     @Autowired
     private SongRepository songRepository;
-
+    @Autowired
+    private ArtistRepository artistRepository;
     public Song temp;
     
     @PostMapping(path="/song/add")
@@ -32,7 +35,8 @@ public class MusicController {
         try{
             int played =0 ;
             Song songData = new Song();
-            songData.setArtist(artist);
+            Artist artistData = artistRepository.findById(artist).get();
+            songData.setArtist(artistData);
             songData.setAlbum(album);
             songData.setLabel(label);
             songData.setGenre(genre);
@@ -94,7 +98,8 @@ public class MusicController {
         try {
             Song songData = new Song();
             songData.setId(id);
-            songData.setArtist(artist);
+            Artist artistData = artistRepository.findById(artist).get();
+            songData.setArtist(artistData);
             songData.setAlbum(album);
             songData.setLabel(label);
             songData.setGenre(genre);
