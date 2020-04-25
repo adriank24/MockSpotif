@@ -8,19 +8,30 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@Table(name = "artist")
 public class Artist implements Serializable{
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) private Integer id;
     private String name;
-    private Integer label;
+    
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="label", nullable = false)
+    private Label label;
 
     @OneToMany
     (
@@ -59,11 +70,12 @@ public class Artist implements Serializable{
         this.name = name;
     }
 
-    public Integer getLabel() {
+    @JsonBackReference
+    public Label getLabel() {
         return this.label;
     }
 
-    public void setLabel(Integer label) {
+    public void setLabel(Label label) {
         this.label = label;
     }
     

@@ -13,21 +13,26 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.Spotify.entities.Artist;
+import com.example.Spotify.entities.Label;
 import com.example.Spotify.repositories.ArtistRepository;
+import com.example.Spotify.repositories.LabelRepository;
 
 @Controller // This means that this class is a Controller
 @RequestMapping(path="/spotif") // This means URL's start with /demo (after Application path)
 public class ArtistController {
   @Autowired
+  private ArtistRepository artistRepo;
 
-    private ArtistRepository artistRepo;
+  @Autowired
+  private LabelRepository labelRepository;
 
-    @PostMapping(path="/artist/add") // Map ONLY POST Requests
+  @PostMapping(path="/artist/add") // Map ONLY POST Requests
   public @ResponseBody ResponseEntity<Artist> addNewArtist (@RequestParam String name, @RequestParam int label) {
     try {
       Artist artistData = new Artist();
         artistData.setName(name);
-        artistData.setLabel(label);
+        Label labelData = labelRepository.findById(label).get();
+        artistData.setLabel(labelData);
         artistRepo.save(artistData);
         return ResponseEntity.ok(artistData); 
 	  }catch (Exception e) {
@@ -75,7 +80,8 @@ public class ArtistController {
         Artist artistData = new Artist();
         artistData.setId(id);
         artistData.setName(name);
-        artistData.setLabel(label);
+        Label labelData = labelRepository.findById(label).get();
+        artistData.setLabel(labelData);
         artistRepo.save(artistData);
         return ResponseEntity.ok(artistData);   
           }catch (Exception e) {

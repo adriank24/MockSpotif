@@ -24,6 +24,27 @@ public class Label implements Serializable{
 
     @OneToMany
     (
+        targetEntity = Artist.class,
+        mappedBy = "label",
+        fetch = FetchType.LAZY
+    )
+    @JsonIgnore
+    private Set<Artist> artists;
+
+    @JsonBackReference
+    public Set<Artist> getArtists() {
+        return artists;
+    }
+
+    public void setArtist(Set<Artist> artists){
+        this.artists = artists;
+        for(Artist artist : artists){
+            artist.setLabel(this);
+        }
+    }
+
+    @OneToMany
+    (
         targetEntity = Song.class,
         mappedBy = "label",
         fetch = FetchType.LAZY
