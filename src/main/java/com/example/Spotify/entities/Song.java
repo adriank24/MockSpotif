@@ -1,6 +1,7 @@
 package com.example.Spotify.entities;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,9 +10,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -43,6 +47,48 @@ public class Song implements Serializable{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name= "artist", nullable = false)
     private Artist artist;
+
+    @OneToMany
+    (
+        targetEntity = PlaylistSong.class,
+        mappedBy = "song",
+        fetch = FetchType.LAZY
+    )
+    @JsonIgnore
+    private Set<PlaylistSong> playlistSongs;
+
+    @JsonBackReference
+    public Set<PlaylistSong> getPlaylistSongs() {
+        return playlistSongs;
+    }
+
+    public void setPlaylistSongs(Set<PlaylistSong> playlistSongs){
+        this.playlistSongs = playlistSongs;
+        for(PlaylistSong playlistSong : playlistSongs){
+            playlistSong.setSong(this);
+        }
+    }
+
+    @OneToMany
+    (
+        targetEntity = History.class,
+        mappedBy = "songId",
+        fetch = FetchType.LAZY
+    )
+    @JsonIgnore
+    private Set<History> histories;
+
+    @JsonBackReference
+    public Set<History> getHistories() {
+        return histories;
+    }
+
+    public void setHistories(Set<History> histories){
+        this.histories = histories;
+        for(History history : histories){
+            history.setSongId(this);
+        }
+    }
 
     public Integer getId() {
         return this.id;

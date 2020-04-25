@@ -5,13 +5,17 @@ import java.util.List;
 import com.example.Spotify.entities.Album;
 import com.example.Spotify.entities.Artist;
 import com.example.Spotify.entities.Genre;
+import com.example.Spotify.entities.History;
 import com.example.Spotify.entities.Label;
 import com.example.Spotify.entities.Song;
+import com.example.Spotify.entities.User;
 import com.example.Spotify.repositories.AlbumRepository;
 import com.example.Spotify.repositories.ArtistRepository;
 import com.example.Spotify.repositories.GenreRepository;
+import com.example.Spotify.repositories.HistoryRepository;
 import com.example.Spotify.repositories.LabelRepository;
 import com.example.Spotify.repositories.SongRepository;
+import com.example.Spotify.repositories.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +46,12 @@ public class MusicController {
 
     @Autowired
     private GenreRepository genreRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+    
+    @Autowired
+    private HistoryRepository historyRepository;
 
     public Song temp;
     
@@ -75,7 +85,6 @@ public class MusicController {
     public @ResponseBody ResponseEntity<Song> getSongbyName(@PathVariable String name) {
         try {
             List<Song> song = songRepository.findByName(name);
-            temp=song.get(0);
             return ResponseEntity.ok(song.get(0)); 
         }catch (Exception e) {
             return ResponseEntity.notFound().build();
@@ -121,13 +130,27 @@ public class MusicController {
 
     //play lagu
     @PutMapping(path="/song/play/{name}")
-    public @ResponseBody ResponseEntity<Song> playSong(@PathVariable String name){
+    public @ResponseBody ResponseEntity<Song> playSong(@PathVariable String name, @RequestParam String email){
         try {
+            User userData= userRepository.findByEmail(email).get(0);
             List<Song> song = songRepository.findByName(name);
             Song songData = song.get(0);
             Integer temp = songData.getPlayed();
             songData.setPlayed(temp+1);
             songRepository.save(songData);
+            History history = historyRepository.findByUserIdAndSongId(userData, songData);
+
+            if(history!=null){
+                Integer tempHist = history.getTimePlayed();
+                history.setTimePlayed(tempHist+1);
+                historyRepository.save(history);
+            }else {
+                History newHistory = new History();
+                newHistory.setSongId(songData);
+                newHistory.setTimePlayed(1);
+                newHistory.setUserId(userData);
+                historyRepository.save(newHistory);
+            }
             return ResponseEntity.ok().build();
           }catch (Exception e) {
             return ResponseEntity.notFound().build();
@@ -137,9 +160,9 @@ public class MusicController {
     @PutMapping(path="/song/update/{id}")
     public @ResponseBody ResponseEntity<Song> updateSong(@RequestParam Integer artist,
     @RequestParam Integer album, @RequestParam Integer label, @RequestParam Integer genre,
-    @RequestParam Double duration, @RequestParam String name, @RequestParam Integer played
-    ,@PathVariable int id){
+    @RequestParam Double duration, @RequestParam String name,@PathVariable int id){
         try {
+            Song songTemp = songRepository.findById(id).get();
             Song songData = new Song();
             songData.setId(id);
             Artist artistData = artistRepository.findById(artist).get();
@@ -152,7 +175,7 @@ public class MusicController {
             songData.setGenre(genreData);
             songData.setDuration(duration);
             songData.setName(name);
-            songData.setPlayed(played);
+            songData.setPlayed(songTemp.getPlayed());
             songRepository.save(songData);
             return ResponseEntity.ok().build();
           }catch (Exception e) {

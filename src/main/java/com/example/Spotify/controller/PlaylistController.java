@@ -34,11 +34,12 @@ public class PlaylistController {
 
     @PostMapping(path="/playlist/add")
     public @ResponseBody ResponseEntity<Playlist> addNewPlaylist(@RequestParam String name,
-    @RequestParam Integer user_id){
+    @RequestParam String email){
         try{
             Playlist playlistData=new Playlist();
             playlistData.setName(name);
-            playlistData.setUser(user_id);
+            User userData = userRepository.findByEmail(email).get(0);
+            playlistData.setUser(userData);
             playlistRepository.save(playlistData);
             return ResponseEntity.ok(playlistData);
         }catch (Exception e){
@@ -50,7 +51,7 @@ public class PlaylistController {
     public @ResponseBody ResponseEntity<List<Playlist>> getPlaylistUser(@PathVariable String email){
         try{
             List<User> user = userRepository.findByEmail(email);
-            Integer id_user=user.get(0).getId();
+            User id_user=user.get(0);
             List<Playlist> playlistData = playlistRepository.findByUser(id_user);
             return ResponseEntity.ok(playlistData);
         }catch(Exception e){
@@ -62,13 +63,13 @@ public class PlaylistController {
     public @ResponseBody ResponseEntity<Void> deletePlaylist(@PathVariable String namePlaylist){
         try {
             List<Playlist> playlist = playlistRepository.findByName(namePlaylist);
-            Integer id_playlist=playlist.get(0).getId();
-            List<PlaylistSong> playlistSong = playlistSongRepository.findByPlaylistId(id_playlist);
+            Playlist playlistData=playlist.get(0);
+            List<PlaylistSong> playlistSong = playlistSongRepository.findByPlaylist(playlistData);
 
             for(int i=0; i<playlistSong.size();i++){
                 playlistSongRepository.deleteById(playlistSong.get(i).getId());
             }
-            playlistRepository.deleteById(id_playlist);
+            playlistRepository.deleteById(playlistData.getId());
             return ResponseEntity.ok().build();
         }catch (Exception e){
             return ResponseEntity.notFound().build();

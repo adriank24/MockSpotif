@@ -1,9 +1,18 @@
 package com.example.Spotify.entities;
 
+import java.util.Set;
+
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Playlist {
@@ -12,7 +21,30 @@ public class Playlist {
     private Integer id;
     private String name;
     // private Date tgl_dibuat;
-    private Integer user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name= "user", nullable = false)
+    private User user;
+
+    @OneToMany
+    (
+        targetEntity = PlaylistSong.class,
+        mappedBy = "playlist",
+        fetch = FetchType.LAZY
+    )
+    @JsonIgnore
+    private Set<PlaylistSong> playlistSongs;
+
+    @JsonBackReference
+    public Set<PlaylistSong> getPlaylistSongs() {
+        return playlistSongs;
+    }
+
+    public void setPlaylistSongs(Set<PlaylistSong> playlistSongs){
+        this.playlistSongs = playlistSongs;
+        for(PlaylistSong playlistSong : playlistSongs){
+            playlistSong.setPlaylist(this);
+        }
+    }
 
     public Integer getId() {
         return this.id;
@@ -38,11 +70,11 @@ public class Playlist {
     //     this.tgl_dibuat = tgl_dibuat;
     // }
 
-    public Integer getUser() {
+    public User getUser() {
         return this.user;
     }
 
-    public void setUser(Integer user) {
+    public void setUser(User user) {
         this.user = user;
     }
     

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+
 import com.example.Spotify.entities.Artist;
 import com.example.Spotify.entities.Song;
 import com.example.Spotify.entities.Label;
@@ -34,12 +36,10 @@ public class LabelController {
     Label temp = new Label();
 
     @PostMapping(path="/label/add")
-    public @ResponseBody ResponseEntity<Label> addLabel(@RequestParam String labelName,
-    @RequestParam Integer labelId){
+    public @ResponseBody ResponseEntity<Label> addLabel(@RequestParam String labelName){
         try{
             Label labelData=new Label();
             labelData.setName(labelName);
-            labelData.setId(labelId);
             labelRepository.save(labelData);
             return ResponseEntity.ok(labelData);
         }catch (Exception e){
@@ -57,7 +57,7 @@ public class LabelController {
         }
     }
 
-    @GetMapping(path="/label/get/{id}")
+    @GetMapping(path="/label/get/{labelId}")
     public @ResponseBody ResponseEntity<Label> getLabel(@PathVariable int labelId){
         try{
             Label labelData = labelRepository.findById(labelId).get();
@@ -69,11 +69,11 @@ public class LabelController {
     }
 
     @PutMapping(path="/label/update/{id}")
-    public @ResponseBody ResponseEntity<Label> updateLabel(@PathVariable int id, @RequestParam String name) {
+    public @ResponseBody ResponseEntity<Label> updateLabel(@PathVariable int id, @RequestParam String labelName) {
         try {
         Label labelData = new Label();
         labelData.setId(id);
-        labelData.setName(name);
+        labelData.setName(labelName);
         labelRepository.save(labelData);
         return ResponseEntity.ok(labelData);   
           }catch (Exception e) {
@@ -81,6 +81,16 @@ public class LabelController {
           }
     }
 
+    @GetMapping(path="/label/view/song/{labelName}")
+    public @ResponseBody ResponseEntity<List<Song>> getSongbyAlbum(@PathVariable String labelName){
+        try{
+            Label labelData = labelRepository.findByName(labelName).get(0);
+            List<Song> songData = songRepository.findByLabel(labelData);
+            return ResponseEntity.ok(songData);
+        }catch(Exception e){
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     // @GetMapping(path="/playlist/get/{email}")
     // public @ResponseBody ResponseEntity<List<Playlist>> getPlaylistUser(@PathVariable String email){

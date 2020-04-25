@@ -49,7 +49,7 @@ public class ArtistController {
     }
   }
 
-  @GetMapping(path="/artist/get/{id}")
+  @GetMapping(path="/artist/get/{artistId}")
   public @ResponseBody ResponseEntity <Artist> getArtist(@PathVariable int artistId) {
     try {
         Artist artistData = artistRepo.findById(artistId).get();
