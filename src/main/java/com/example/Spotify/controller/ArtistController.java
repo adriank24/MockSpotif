@@ -44,6 +44,18 @@ public class ArtistController {
     }
   }
 
+  @GetMapping(path="/artist/get/{id}")
+  public @ResponseBody ResponseEntity <Artist> getArtist(@PathVariable int artistId) {
+    try {
+        Artist artistData = artistRepo.findById(artistId).get();
+        return ResponseEntity.ok(artistData); 
+    }catch (Exception e) {
+      return ResponseEntity.notFound().build();
+    }
+  }
+
+  
+
   @DeleteMapping(path="/artist/delete/{id}")
     public @ResponseBody ResponseEntity<Void> deleteArtist(@PathVariable int id){
         try {
@@ -54,6 +66,7 @@ public class ArtistController {
         }
         
     }
+  
 
     @PutMapping(path="/artist/update/{id}")
     public @ResponseBody ResponseEntity<Artist> updateArtist(@PathVariable int id, @RequestParam String name,
