@@ -111,7 +111,7 @@ public class MainController {
   }
   
   @DeleteMapping(path="/user/delete/{id}")
-    public @ResponseBody ResponseEntity<Void> deleteSong(@PathVariable int id){
+    public @ResponseBody ResponseEntity<Void> deleteUser(@PathVariable int id){
         try {
             userRepository.deleteById(id);
             return ResponseEntity.ok().build();

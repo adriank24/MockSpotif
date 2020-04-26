@@ -19,7 +19,6 @@ import com.example.Spotify.repositories.LabelRepository;
 
 import java.util.List;
 
-
 @Controller // This means that this class is a Controller
 @RequestMapping(path="/spotif") // This means URL's start with /demo (after Application path)
 public class ArtistController {
@@ -104,7 +103,6 @@ public class ArtistController {
     }
   }  
   
-
 
     @PutMapping(path="/artist/update/{id}")
     public @ResponseBody ResponseEntity<Artist> updateArtist(@PathVariable int id, @RequestParam String name,

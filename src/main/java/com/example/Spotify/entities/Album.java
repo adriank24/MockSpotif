@@ -9,12 +9,21 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@Table(name= "album")
 public class Album implements Serializable{
     private static final long serialVersionUID = 1L;
 
@@ -22,8 +31,14 @@ public class Album implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
-    private Integer artist;
-    private Integer label;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name= "label", nullable = false)
+    private Label label;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name= "artist", nullable = false)
+    private Artist artist;
 
     @OneToMany
     (
@@ -62,19 +77,21 @@ public class Album implements Serializable{
         this.name = name;
     }
 
-    public Integer getArtist() {
-        return this.artist;
+    @JsonManagedReference
+    public Artist getArtist(){
+        return artist;
     }
 
-    public void setArtist(Integer artist) {
+    public void setArtist(Artist artist) {
         this.artist = artist;
     }
 
-    public Integer getLabel() {
+    @JsonManagedReference
+    public Label getLabel() {
         return this.label;
     }
 
-    public void setLabel(Integer label) {
+    public void setLabel(Label label) {
         this.label = label;
     }
 

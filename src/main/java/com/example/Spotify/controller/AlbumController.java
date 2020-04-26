@@ -38,9 +38,11 @@ public class AlbumController {
     public @ResponseBody ResponseEntity<Album> addNewAlbum (@RequestParam String name, @RequestParam int label, @RequestParam int artist) {
         try {
             Album albumData = new Album();
+            Label labelData = labelRepo.findById(label).get();
+            albumData.setLabel(labelData);
+            Artist artistData = artistRepo.findById(artist).get();
+            albumData.setArtist(artistData);
             albumData.setName(name);
-            albumData.setLabel(label);
-            albumData.setArtist(artist);
             albumRepository.save(albumData);
             return ResponseEntity.ok(albumData); 
         }catch (Exception e) {
@@ -111,8 +113,10 @@ public class AlbumController {
         Album albumData = new Album();
         albumData.setId(id);
         albumData.setName(name);
-        albumData.setLabel(label);
-        albumData.setArtist(artist);
+        Label labelData = labelRepo.findById(label).get();
+        albumData.setLabel(labelData);
+        Artist artistData = artistRepo.findById(artist).get();
+        albumData.setArtist(artistData);
         albumRepository.save(albumData);
         return ResponseEntity.ok(albumData);   
           }catch (Exception e) {
