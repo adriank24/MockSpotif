@@ -90,14 +90,9 @@ public class ArtistController {
     public @ResponseBody ResponseEntity<Void> deleteArtist(@PathVariable int id){
         try {
             Artist artistData = artistRepo.findById(id).get();
-            List<Song> songData = songRepo.findByArtist(artistData);
             List<Album> albumData = albumRepo.findByArtist(artistData);
             for(int i=0;i<albumData.size();i++){
               albumController.deleteAlbum(albumData.get(i).getId());
-            };
-  
-            for(int i=0;i<songData.size();i++){
-              songController.deleteSong(songData.get(i).getId());
             };
             artistRepo.deleteById(id);
             return ResponseEntity.ok().build();

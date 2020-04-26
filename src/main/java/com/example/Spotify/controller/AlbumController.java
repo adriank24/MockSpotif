@@ -16,9 +16,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.example.Spotify.entities.Album;
 import com.example.Spotify.entities.Label;
 import com.example.Spotify.entities.Artist;
+import com.example.Spotify.entities.Song;
 import com.example.Spotify.repositories.AlbumRepository;
 import com.example.Spotify.repositories.LabelRepository;
 import com.example.Spotify.repositories.ArtistRepository;
+import com.example.Spotify.repositories.SongRepository;
+import com.example.Spotify.controller.MusicController;
 
 import java.util.List;
 
@@ -33,6 +36,11 @@ public class AlbumController {
 
     @Autowired
     private LabelRepository labelRepo;
+
+    @Autowired 
+    private SongRepository songRepo;
+
+    private MusicController songController;
 
     @PostMapping(path="/album/add") // Map ONLY POST Requests
     public @ResponseBody ResponseEntity<Album> addNewAlbum (@RequestParam String name, @RequestParam int label, @RequestParam int artist) {
@@ -98,6 +106,11 @@ public class AlbumController {
     @DeleteMapping(path="/album/delete/{id}")
     public @ResponseBody ResponseEntity<Void> deleteAlbum(@PathVariable int id){
         try {
+            Album albumData = albumRepository.findById(id).get();
+            List<Song> songData = songRepo.findByAlbum(albumData);
+            for(int i=0;i<songData.size();i++){
+                songController.deleteSong(songData.get(i).getId());
+              };
             albumRepository.deleteById(id);
             return ResponseEntity.ok().build();
         }catch (Exception e) {
