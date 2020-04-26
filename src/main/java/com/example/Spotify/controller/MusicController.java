@@ -9,6 +9,8 @@ import com.example.Spotify.entities.History;
 import com.example.Spotify.entities.Label;
 import com.example.Spotify.entities.Song;
 import com.example.Spotify.entities.User;
+import com.example.Spotify.entities.PlaylistSong;
+import com.example.Spotify.entities.History;
 import com.example.Spotify.repositories.AlbumRepository;
 import com.example.Spotify.repositories.ArtistRepository;
 import com.example.Spotify.repositories.GenreRepository;
@@ -16,6 +18,10 @@ import com.example.Spotify.repositories.HistoryRepository;
 import com.example.Spotify.repositories.LabelRepository;
 import com.example.Spotify.repositories.SongRepository;
 import com.example.Spotify.repositories.UserRepository;
+import com.example.Spotify.repositories.PlaylistSongRepository;
+import com.example.Spotify.repositories.HistoryRepository;
+
+import com.example.Spotify.controller.PlaylistSongController;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -52,6 +58,9 @@ public class MusicController {
     
     @Autowired
     private HistoryRepository historyRepository;
+
+    @Autowired
+    private PlaylistSongRepository playlistsongRepo;
 
     public Song temp;
     
@@ -186,6 +195,16 @@ public class MusicController {
     @DeleteMapping(path="/song/delete/{id}")
     public @ResponseBody ResponseEntity<Void> deleteSong(@PathVariable int songId){
         try {
+            Song songData = songRepository.findById(songId).get();
+            List<History> historyData = historyRepository.findBySongId(songData);
+            List<PlaylistSong> playlistSongs = playlistsongRepo.findBySong(songData);
+            for(int j=0;j<historyData.size();j++){
+              historyRepository.deleteById(historyData.get(j).getId());
+           }
+
+            for(int j=0;j<playlistSongs.size();j++){
+                playlistsongRepo.deleteById(playlistSongs.get(j).getId());
+            }
             songRepository.deleteById(songId);
             return ResponseEntity.ok().build();
         }catch (Exception e) {
