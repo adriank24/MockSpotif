@@ -50,6 +50,24 @@ public class MainController {
     }
   }
 
+  @GetMapping(path = "/user/login/{email}")
+  public @ResponseBody ResponseEntity<User> loginUser(@PathVariable String email, @RequestParam String password){
+    try {
+      User userData = userRepository.findByEmailAndPassword(email, password);
+      String userEmail=userData.getEmail();
+      String userName = userData.getName();
+      String userPw = userData.getPassword();
+
+      temp.setEmail(userEmail);
+      temp.setName(userName);
+      temp.setPassword(userPw);
+
+      return ResponseEntity.ok(userData); 
+    }catch (Exception e) {
+      return ResponseEntity.notFound().build();
+    }
+  }
+
   @GetMapping(path="/user/{id}")
   public @ResponseBody ResponseEntity<User> getUser(@PathVariable int id) {
     try {
