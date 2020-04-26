@@ -102,6 +102,18 @@ public class MusicController {
             return ResponseEntity.notFound().build();
         }
     }
+    
+    @GetMapping(path="/song/get/label/{name}")
+    public @ResponseBody ResponseEntity<List<Song>> getSongByLabel(@PathVariable String labelName){
+        try{
+            Label labelData = labelRepository.findByName(labelName);
+            List<Song> songData = songRepository.findByLabel(labelData);
+            return ResponseEntity.ok(songData);
+        }
+        catch(Exception e){
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     @GetMapping(path="/song/get/album/{name}")
     public @ResponseBody ResponseEntity<List<Song>> getSongbyAlbum(@PathVariable String name){
@@ -115,18 +127,6 @@ public class MusicController {
         }
     }
 
-
-    // //Milih Lagu, by id
-    // @GetMapping(path="/song/get/{id}")
-    // public @ResponseBody ResponseEntity<Song> selectSong(@PathVariable int id) {
-    //     try {
-    //         Song songData = songRepository.findById(id).get();
-            
-    //         return ResponseEntity.ok(songData); 
-    //     }catch (Exception e) {
-    //         return ResponseEntity.notFound().build();
-    //     }
-    // }
 
     //play lagu
     @PutMapping(path="/song/play/{name}")
@@ -183,14 +183,17 @@ public class MusicController {
           }
     }
 
-    @DeleteMapping(path="/song/delete/{id}")
-    public @ResponseBody ResponseEntity<Void> deleteSong(@PathVariable int id){
-        try {
-            songRepository.deleteById(id);
+
+    @DeleteMapping(path="/song/delete/artist/{id}")
+    public @ResponseBody ResponseEntity<Void> deleteSongByArtist(@PathVariable int artistId){
+        try{
+            Artist dataArtist = artistRepository.findById(artistId).get();
+            songRepository.deleteByArtist(dataArtist);
             return ResponseEntity.ok().build();
-        }catch (Exception e) {
+
+        }
+        catch (Exception e){
             return ResponseEntity.notFound().build();
         }
-        
     }
 }

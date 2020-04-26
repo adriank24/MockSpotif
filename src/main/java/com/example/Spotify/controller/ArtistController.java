@@ -17,6 +17,9 @@ import com.example.Spotify.entities.Label;
 import com.example.Spotify.repositories.ArtistRepository;
 import com.example.Spotify.repositories.LabelRepository;
 
+import java.util.List;
+
+
 @Controller // This means that this class is a Controller
 @RequestMapping(path="/spotif") // This means URL's start with /demo (after Application path)
 public class ArtistController {
@@ -25,6 +28,8 @@ public class ArtistController {
 
   @Autowired
   private LabelRepository labelRepository;
+
+  private MusicController songController;
 
   @PostMapping(path="/artist/add") // Map ONLY POST Requests
   public @ResponseBody ResponseEntity<Artist> addNewArtist (@RequestParam String name, @RequestParam int label) {
@@ -59,11 +64,26 @@ public class ArtistController {
     }
   }
 
-  
+
+  @GetMapping(path="/artist/get/label/{labelId}")
+  public @ResponseBody ResponseEntity <List<Artist>> getArtistByLabel(@PathVariable int labelId){
+    try{
+      Label labelData = labelRepository.findById(labelId).get();
+      List<Artist> artistData = artistRepo.findByLabel(labelData);
+
+      return ResponseEntity.ok(artistData);
+    }
+    catch (Exception e){
+      return ResponseEntity.notFound().build();
+    }
+
+  }
+
 
   @DeleteMapping(path="/artist/delete/{id}")
     public @ResponseBody ResponseEntity<Void> deleteArtist(@PathVariable int id){
         try {
+            songController.deleteSongByArtist(id);
             artistRepo.deleteById(id);
             return ResponseEntity.ok().build();
         }catch (Exception e) {
@@ -71,7 +91,20 @@ public class ArtistController {
         }
         
     }
+
+  @DeleteMapping(path="/artist/delete/label/{id}")
+  public @ResponseBody ResponseEntity<Void> deleteArtistByLabel(@PathVariable int labelId){
+    try{
+      Label labelData = labelRepository.findById(labelId).get();
+      artistRepo.deleteByLabel(labelData);
+      return ResponseEntity.ok().build();
+    }
+    catch (Exception e){
+      return ResponseEntity.notFound().build();
+    }
+  }  
   
+
 
     @PutMapping(path="/artist/update/{id}")
     public @ResponseBody ResponseEntity<Artist> updateArtist(@PathVariable int id, @RequestParam String name,

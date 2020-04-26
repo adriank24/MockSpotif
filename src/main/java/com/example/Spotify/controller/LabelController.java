@@ -12,14 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.List;
-
-import com.example.Spotify.entities.Artist;
-import com.example.Spotify.entities.Song;
 import com.example.Spotify.entities.Label;
-import com.example.Spotify.repositories.ArtistRepository;
-import com.example.Spotify.repositories.SongRepository;
+
 import com.example.Spotify.repositories.LabelRepository;
+
 
 @Controller
 @RequestMapping(path="/spotif")
@@ -27,12 +23,7 @@ public class LabelController {
     @Autowired
     private LabelRepository labelRepository;
 
-    @Autowired
-    private SongRepository songRepository;
-
-    @Autowired
-    private ArtistRepository artistRepository;
-
+    private ArtistController artistController;
     Label temp = new Label();
 
     @PostMapping(path="/label/add")
@@ -81,46 +72,19 @@ public class LabelController {
           }
     }
 
-    @GetMapping(path="/label/view/song/{labelName}")
-    public @ResponseBody ResponseEntity<List<Song>> getSongbyAlbum(@PathVariable String labelName){
+
+    @DeleteMapping(path="/label/delete/{id}")
+    public @ResponseBody ResponseEntity<Void> deleteLabel(@PathVariable int labelId){
         try{
-            Label labelData = labelRepository.findByName(labelName).get(0);
-            List<Song> songData = songRepository.findByLabel(labelData);
-            return ResponseEntity.ok(songData);
-        }catch(Exception e){
+            artistController.deleteArtistByLabel(labelId);
+            labelRepository.deleteById(labelId);
+
+            return ResponseEntity.ok().build();
+        }
+        catch (Exception e){
             return ResponseEntity.notFound().build();
         }
     }
-
-    // @GetMapping(path="/playlist/get/{email}")
-    // public @ResponseBody ResponseEntity<List<Playlist>> getPlaylistUser(@PathVariable String email){
-    //     try{
-    //         List<User> user = userRepository.findByEmail(email);
-    //         Integer id_user=user.get(0).getId();
-    //         List<Playlist> playlistData = playlistRepository.findByUser(id_user);
-    //         return ResponseEntity.ok(playlistData);
-    //     }catch(Exception e){
-    //         return ResponseEntity.notFound().build();
-    //     }
-    // }
-
-
-
-    // @DeleteMapping(path = "/playlist/delete/{namePlaylist}")
-    // public @ResponseBody ResponseEntity<Void> deletePlaylist(@PathVariable String namePlaylist){
-    //     try {
-    //         List<Playlist> playlist = playlistRepository.findByName(namePlaylist);
-    //         Integer id_playlist=playlist.get(0).getId();
-    //         List<PlaylistSong> playlistSong = playlistSongRepository.findByPlaylistId(id_playlist);
-
-    //         for(int i=0; i<playlistSong.size();i++){
-    //             playlistSongRepository.deleteById(playlistSong.get(i).getId());
-    //         }
-    //         playlistRepository.deleteById(id_playlist);
-    //         return ResponseEntity.ok().build();
-    //     }catch (Exception e){
-    //         return ResponseEntity.notFound().build();
-    //     }
-    // }
+    
 
 }
