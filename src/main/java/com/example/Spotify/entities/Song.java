@@ -86,7 +86,7 @@ public class Song implements Serializable{
     public void setHistories(Set<History> histories){
         this.histories = histories;
         for(History history : histories){
-            history.setSongId(this);
+            history.setSongId(this.id);
         }
     }
 

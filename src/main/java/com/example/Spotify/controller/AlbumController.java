@@ -61,9 +61,9 @@ public class AlbumController {
     }
 
     @GetMapping(path="/album/get/{id}")
-    public @ResponseBody ResponseEntity<Album> getAlbumById(@PathVariable int albumId){
+    public @ResponseBody ResponseEntity<Album> getAlbumById(@PathVariable int id){
         try{
-            Album albumData = albumRepository.findById(albumId).get();
+            Album albumData = albumRepository.findById(id).get();
             return ResponseEntity.ok(albumData);
         }
         catch (Exception e){
@@ -124,15 +124,4 @@ public class AlbumController {
           }
     }
 
-    @DeleteMapping(path="/album/delete/artist/{id}")
-    public @ResponseBody ResponseEntity<Void> deleteAlbumByArtist(@PathVariable int artistId){
-        try{
-            Artist dataArtist = artistRepo.findById(artistId).get();
-            albumRepository.deleteByArtist(dataArtist);
-            return ResponseEntity.ok().build();
-        }
-        catch (Exception e){
-            return ResponseEntity.notFound().build();
-        }
-    }
 }

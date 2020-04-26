@@ -14,5 +14,4 @@ public interface AlbumRepository extends CrudRepository<Album,Integer> {
     List<Album> findByArtist(Artist artist);
     List<Album> findByLabel(Label label);
     Album findByName(String name);
-    Void deleteByArtist(Artist artist);
 }

@@ -13,5 +13,4 @@ public interface SongRepository extends CrudRepository<Song,Integer> {
     List<Song> findByArtist(Artist artist);
     List<Song> findByAlbum(Album album);
     List<Song> findByLabel(Label label);
-    Void deleteByArtist(Artist artist);
 }

@@ -14,8 +14,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.Spotify.entities.Artist;
 import com.example.Spotify.entities.Label;
+import com.example.Spotify.entities.Song;
+import com.example.Spotify.entities.Album;
 import com.example.Spotify.repositories.ArtistRepository;
 import com.example.Spotify.repositories.LabelRepository;
+import com.example.Spotify.repositories.SongRepository;
+import com.example.Spotify.repositories.AlbumRepository;
+
 
 import java.util.List;
 
@@ -27,8 +32,11 @@ public class ArtistController {
 
   @Autowired
   private LabelRepository labelRepository;
+  private SongRepository songRepo;
+  private AlbumRepository albumRepo;
 
   private MusicController songController;
+  private AlbumController albumController;
 
   @PostMapping(path="/artist/add") // Map ONLY POST Requests
   public @ResponseBody ResponseEntity<Artist> addNewArtist (@RequestParam String name, @RequestParam int label) {
@@ -78,11 +86,19 @@ public class ArtistController {
 
   }
 
-
   @DeleteMapping(path="/artist/delete/{id}")
     public @ResponseBody ResponseEntity<Void> deleteArtist(@PathVariable int id){
         try {
-            songController.deleteSongByArtist(id);
+            Artist artistData = artistRepo.findById(id).get();
+            List<Song> songData = songRepo.findByArtist(artistData);
+            List<Album> albumData = albumRepo.findByArtist(artistData);
+            for(int i=0;i<albumData.size();i++){
+              albumController.deleteAlbum(albumData.get(i).getId());
+            };
+  
+            for(int i=0;i<songData.size();i++){
+              songController.deleteSong(songData.get(i).getId());
+            };
             artistRepo.deleteById(id);
             return ResponseEntity.ok().build();
         }catch (Exception e) {
@@ -91,18 +107,6 @@ public class ArtistController {
         
     }
 
-  @DeleteMapping(path="/artist/delete/label/{id}")
-  public @ResponseBody ResponseEntity<Void> deleteArtistByLabel(@PathVariable int labelId){
-    try{
-      Label labelData = labelRepository.findById(labelId).get();
-      artistRepo.deleteByLabel(labelData);
-      return ResponseEntity.ok().build();
-    }
-    catch (Exception e){
-      return ResponseEntity.notFound().build();
-    }
-  }  
-  
 
     @PutMapping(path="/artist/update/{id}")
     public @ResponseBody ResponseEntity<Artist> updateArtist(@PathVariable int id, @RequestParam String name,

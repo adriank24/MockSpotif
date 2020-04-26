@@ -138,7 +138,7 @@ public class MusicController {
             Integer temp = songData.getPlayed();
             songData.setPlayed(temp+1);
             songRepository.save(songData);
-            History history = historyRepository.findByUserIdAndSongId(userData, songData);
+            History history = historyRepository.findByUserIdAndSongId(userData, songData.getId());
 
             if(history!=null){
                 Integer tempHist = history.getTimePlayed();
@@ -146,7 +146,7 @@ public class MusicController {
                 historyRepository.save(history);
             }else {
                 History newHistory = new History();
-                newHistory.setSongId(songData);
+                newHistory.setSongId(songData.getId());
                 newHistory.setTimePlayed(1);
                 newHistory.setUserId(userData);
                 historyRepository.save(newHistory);
@@ -183,17 +183,15 @@ public class MusicController {
           }
     }
 
-
-    @DeleteMapping(path="/song/delete/artist/{id}")
-    public @ResponseBody ResponseEntity<Void> deleteSongByArtist(@PathVariable int artistId){
-        try{
-            Artist dataArtist = artistRepository.findById(artistId).get();
-            songRepository.deleteByArtist(dataArtist);
+    @DeleteMapping(path="/song/delete/{id}")
+    public @ResponseBody ResponseEntity<Void> deleteSong(@PathVariable int songId){
+        try {
+            songRepository.deleteById(songId);
             return ResponseEntity.ok().build();
-
-        }
-        catch (Exception e){
+        }catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
+        
     }
+
 }

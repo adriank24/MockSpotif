@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.Spotify.entities.Label;
-
+import com.example.Spotify.repositories.ArtistRepository;
 import com.example.Spotify.repositories.LabelRepository;
+import com.example.Spotify.entities.Artist;
+
+import java.util.List;
 
 
 @Controller
@@ -23,6 +26,7 @@ public class LabelController {
     @Autowired
     private LabelRepository labelRepository;
 
+    private ArtistRepository artistRepo;
     private ArtistController artistController;
     Label temp = new Label();
 
@@ -74,11 +78,15 @@ public class LabelController {
 
 
     @DeleteMapping(path="/label/delete/{id}")
-    public @ResponseBody ResponseEntity<Void> deleteLabel(@PathVariable int labelId){
+    public @ResponseBody ResponseEntity<Void> deleteLabel(@PathVariable int id){
         try{
-            artistController.deleteArtistByLabel(labelId);
-            labelRepository.deleteById(labelId);
+            Label labelData = labelRepository.findById(id).get();
+            List<Artist> artistData = artistRepo.findByLabel(labelData);
 
+            for(int i=0;i<artistData.size();i++){
+                artistController.deleteArtist(artistData.get(i).getId());
+            };
+            labelRepository.deleteById(id);
             return ResponseEntity.ok().build();
         }
         catch (Exception e){
