@@ -198,12 +198,16 @@ public class MusicController {
             Song songData = songRepository.findById(songId).get();
             List<History> historyData = historyRepository.findBySongId(songData);
             List<PlaylistSong> playlistSongs = playlistsongRepo.findBySong(songData);
-            for(int j=0;j<historyData.size();j++){
-              historyRepository.deleteById(historyData.get(j).getId());
-           }
+            if(historyData!=null){
+                for(int j=0;j<historyData.size();j++){
+                    historyRepository.deleteById(historyData.get(j).getId());
+                }
+            }
 
-            for(int j=0;j<playlistSongs.size();j++){
-                playlistsongRepo.deleteById(playlistSongs.get(j).getId());
+            if(playlistSongs!=null){
+                for(int j=0;j<playlistSongs.size();j++){
+                    playlistsongRepo.deleteById(playlistSongs.get(j).getId());
+                }
             }
             songRepository.deleteById(songId);
             return ResponseEntity.ok().build();

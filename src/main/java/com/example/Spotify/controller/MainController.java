@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 import com.example.Spotify.entities.History;
+import com.example.Spotify.entities.Playlist;
 import com.example.Spotify.entities.User;
 import com.example.Spotify.repositories.HistoryRepository;
+import com.example.Spotify.repositories.PlaylistRepository;
 import com.example.Spotify.repositories.UserRepository;
 
 
@@ -31,6 +33,12 @@ public class MainController {
 
   @Autowired
   private HistoryRepository historyRepository;
+
+  @Autowired
+  private PlaylistRepository playlistRepository;
+
+  @Autowired
+  private PlaylistController playlistController;
 
   @PostMapping(path="/user/register") // Map ONLY POST Requests
   public @ResponseBody ResponseEntity<User> addNewUser (@RequestParam String name
@@ -113,6 +121,19 @@ public class MainController {
   @DeleteMapping(path="/user/delete/{id}")
     public @ResponseBody ResponseEntity<Void> deleteUser(@PathVariable int id){
         try {
+            User userData = userRepository.findById(id).get();
+            List<Playlist> playlistsData= playlistRepository.findByUser(userData);
+
+            for(int i=0; i<playlistsData.size();i++){
+              playlistController.deletePlaylist(playlistsData.get(i).getName());
+            }
+
+            List<History> historyData = historyRepository.findByUserId(userData);
+
+            for(int i=0; i<historyData.size();i++){
+              historyRepository.deleteById(historyData.get(i).getId());
+            }
+
             userRepository.deleteById(id);
             return ResponseEntity.ok().build();
         }catch (Exception e) {

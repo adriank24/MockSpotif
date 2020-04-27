@@ -91,9 +91,11 @@ public class ArtistController {
         try {
             Artist artistData = artistRepo.findById(id).get();
             List<Album> albumData = albumRepo.findByArtist(artistData);
-            for(int i=0;i<albumData.size();i++){
-              albumController.deleteAlbum(albumData.get(i).getId());
-            };
+            if(albumData!=null){
+              for(int i=0;i<albumData.size();i++){
+                albumController.deleteAlbum(albumData.get(i).getId());
+              };
+            }
             artistRepo.deleteById(id);
             return ResponseEntity.ok().build();
         }catch (Exception e) {
