@@ -49,7 +49,6 @@ public class AlbumController {
     @Autowired
     private PlaylistSongRepository playlistsongRepo;
 
-    private MusicController songController;
 
     @PostMapping(path="/album/add") // Map ONLY POST Requests
     public @ResponseBody ResponseEntity<Album> addNewAlbum (@RequestParam String name, @RequestParam int label, @RequestParam int artist) {

@@ -147,11 +147,18 @@ public class LabelController {
         try{
             Label labelData = labelRepository.findById(id).get();
             List<Artist> artistData = artistRepo.findByLabel(labelData);
+            List<Album> albumData = albumRepo.findByLabel(labelData);
+            if(albumData!=null){
+                for(int i=0;i<albumData.size();i++){
+                  deleteAlbum(albumData.get(i).getId());
+                };
+            }
+
             if(artistData!=null){
                 for(int i=0;i<artistData.size();i++){
                   deleteArtist(artistData.get(i).getId());
                 };
-            };
+            }
             labelRepository.deleteById(id);
             return ResponseEntity.ok().build();
         }
