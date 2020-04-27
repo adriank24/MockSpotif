@@ -112,7 +112,7 @@ public class MusicController {
         }
     }
     
-    @GetMapping(path="/song/get/label/{name}")
+    @GetMapping(path="/song/get/label/{labelName}")
     public @ResponseBody ResponseEntity<List<Song>> getSongByLabel(@PathVariable String labelName){
         try{
             Label labelData = labelRepository.findByName(labelName);
