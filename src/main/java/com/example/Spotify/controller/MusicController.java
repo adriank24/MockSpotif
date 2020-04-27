@@ -193,7 +193,7 @@ public class MusicController {
           }
     }
 
-    @DeleteMapping(path="/song/delete/{id}")
+    @DeleteMapping(path="/song/delete/{songId}")
     public @ResponseBody ResponseEntity<Void> deleteSong(@PathVariable int songId){
         try {
             Song songData = songRepository.findById(songId).get();
