@@ -13,8 +13,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.Spotify.entities.Label;
+import com.example.Spotify.entities.Song;
+import com.example.Spotify.entities.Album;
+import com.example.Spotify.entities.PlaylistSong;
+import com.example.Spotify.entities.History;
 import com.example.Spotify.repositories.ArtistRepository;
 import com.example.Spotify.repositories.LabelRepository;
+import com.example.Spotify.repositories.SongRepository;
+import com.example.Spotify.repositories.AlbumRepository;
+import com.example.Spotify.repositories.PlaylistSongRepository;
+import com.example.Spotify.repositories.HistoryRepository;
 import com.example.Spotify.entities.Artist;
 
 import java.util.List;
@@ -25,9 +33,14 @@ import java.util.List;
 public class LabelController {
     @Autowired
     private LabelRepository labelRepository;
-
+    private SongRepository songRepo;
+    private AlbumRepository albumRepo;
+    @Autowired
+    private HistoryRepository historyRepository;
+    @Autowired
+    private PlaylistSongRepository playlistsongRepo;
     private ArtistRepository artistRepo;
-    private ArtistController artistController;
+   
     Label temp = new Label();
 
     @PostMapping(path="/label/add")
@@ -76,15 +89,68 @@ public class LabelController {
           }
     }
 
+    public void deleteSong(int songId){
+        try {
+            Song songData = songRepo.findById(songId).get();
+            List<History> historyData = historyRepository.findBySongId(songData);
+            List<PlaylistSong> playlistSongs = playlistsongRepo.findBySong(songData);
+            if(historyData!=null){
+                for(int j=0;j<historyData.size();j++){
+                    historyRepository.deleteById(historyData.get(j).getId());
+                }
+            }
+            if(playlistSongs!=null){
+                for(int j=0;j<playlistSongs.size();j++){
+                    playlistsongRepo.deleteById(playlistSongs.get(j).getId());
+                }
+            }
+            songRepo.deleteById(songId);
+        }catch (Exception e) {
+            System.out.println("Error");
+          }
+    }
+
+    public void deleteAlbum(int id){
+      try {
+          Album albumData = albumRepo.findById(id).get();
+          List<Song> songData = songRepo.findByAlbum(albumData);
+          if(songData != null){
+              for(int i=0;i<songData.size();i++){
+                  deleteSong(songData.get(i).getId());
+              };
+          }
+          albumRepo.deleteById(id);
+      }catch (Exception e) {
+          System.out.println("error");
+      }
+      
+  }
+
+  public void deleteArtist(int id){
+    try {
+        Artist artistData = artistRepo.findById(id).get();
+        List<Album> albumData = albumRepo.findByArtist(artistData);
+        if(albumData!=null){
+          for(int x=0;x<albumData.size();x++){
+            deleteAlbum(albumData.get(x).getId());
+          };
+        }
+        artistRepo.deleteById(id);
+    }catch (Exception e) {
+        System.out.println("error");
+    }
+    
+}
 
     @DeleteMapping(path="/label/delete/{id}")
     public @ResponseBody ResponseEntity<Void> deleteLabel(@PathVariable int id){
         try{
             Label labelData = labelRepository.findById(id).get();
             List<Artist> artistData = artistRepo.findByLabel(labelData);
-
-            for(int i=0;i<artistData.size();i++){
-                artistController.deleteArtist(artistData.get(i).getId());
+            if(artistData!=null){
+                for(int i=0;i<artistData.size();i++){
+                  deleteArtist(artistData.get(i).getId());
+                };
             };
             labelRepository.deleteById(id);
             return ResponseEntity.ok().build();

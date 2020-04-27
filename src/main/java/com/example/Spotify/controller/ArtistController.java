@@ -16,10 +16,14 @@ import com.example.Spotify.entities.Artist;
 import com.example.Spotify.entities.Label;
 import com.example.Spotify.entities.Song;
 import com.example.Spotify.entities.Album;
+import com.example.Spotify.entities.PlaylistSong;
+import com.example.Spotify.entities.History;
 import com.example.Spotify.repositories.ArtistRepository;
 import com.example.Spotify.repositories.LabelRepository;
 import com.example.Spotify.repositories.SongRepository;
 import com.example.Spotify.repositories.AlbumRepository;
+import com.example.Spotify.repositories.PlaylistSongRepository;
+import com.example.Spotify.repositories.HistoryRepository;
 
 
 import java.util.List;
@@ -35,8 +39,12 @@ public class ArtistController {
   private SongRepository songRepo;
   private AlbumRepository albumRepo;
 
-  private MusicController songController;
-  private AlbumController albumController;
+    @Autowired
+    private HistoryRepository historyRepository;
+
+    @Autowired
+    private PlaylistSongRepository playlistsongRepo;
+
 
   @PostMapping(path="/artist/add") // Map ONLY POST Requests
   public @ResponseBody ResponseEntity<Artist> addNewArtist (@RequestParam String name, @RequestParam int label) {
@@ -86,14 +94,51 @@ public class ArtistController {
 
   }
 
+      public void deleteSong(int songId){
+        try {
+            Song songData = songRepo.findById(songId).get();
+            List<History> historyData = historyRepository.findBySongId(songData);
+            List<PlaylistSong> playlistSongs = playlistsongRepo.findBySong(songData);
+            if(historyData!=null){
+                for(int j=0;j<historyData.size();j++){
+                    historyRepository.deleteById(historyData.get(j).getId());
+                }
+            }
+            if(playlistSongs!=null){
+                for(int j=0;j<playlistSongs.size();j++){
+                    playlistsongRepo.deleteById(playlistSongs.get(j).getId());
+                }
+            }
+            songRepo.deleteById(songId);
+        }catch (Exception e) {
+            System.out.println("Error");
+          }
+    }
+
+    public void deleteAlbum(int id){
+      try {
+          Album albumData = albumRepo.findById(id).get();
+          List<Song> songData = songRepo.findByAlbum(albumData);
+          if(songData != null){
+              for(int i=0;i<songData.size();i++){
+                  deleteSong(songData.get(i).getId());
+              };
+          }
+          albumRepo.deleteById(id);
+      }catch (Exception e) {
+          System.out.println("error");
+      }
+      
+  }
+
   @DeleteMapping(path="/artist/delete/{id}")
     public @ResponseBody ResponseEntity<Void> deleteArtist(@PathVariable int id){
         try {
             Artist artistData = artistRepo.findById(id).get();
             List<Album> albumData = albumRepo.findByArtist(artistData);
             if(albumData!=null){
-              for(int i=0;i<albumData.size();i++){
-                albumController.deleteAlbum(albumData.get(i).getId());
+              for(int x=0;x<albumData.size();x++){
+                deleteAlbum(albumData.get(x).getId());
               };
             }
             artistRepo.deleteById(id);
@@ -103,7 +148,6 @@ public class ArtistController {
         }
         
     }
-
 
     @PutMapping(path="/artist/update/{id}")
     public @ResponseBody ResponseEntity<Artist> updateArtist(@PathVariable int id, @RequestParam String name,
