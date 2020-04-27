@@ -112,6 +112,27 @@ public class AlbumController {
         }
     }
 
+    public void deleteSong(int songId){
+        try {
+            Song songData = songRepo.findById(songId).get();
+            List<History> historyData = historyRepository.findBySongId(songData);
+            List<PlaylistSong> playlistSongs = playlistsongRepo.findBySong(songData);
+            if(historyData!=null){
+                for(int j=0;j<historyData.size();j++){
+                    historyRepository.deleteById(historyData.get(j).getId());
+                }
+            }
+            if(playlistSongs!=null){
+                for(int j=0;j<playlistSongs.size();j++){
+                    playlistsongRepo.deleteById(playlistSongs.get(j).getId());
+                }
+            }
+            songRepo.deleteById(songId);
+        }catch (Exception e) {
+            System.out.println("Error");
+          }
+    }
+
     @DeleteMapping(path="/album/delete/{id}")
     public @ResponseBody ResponseEntity<Void> deleteAlbum(@PathVariable int id){
         try {
@@ -119,20 +140,7 @@ public class AlbumController {
             List<Song> songData = songRepo.findByAlbum(albumData);
             if(songData != null){
                 for(int i=0;i<songData.size();i++){
-                    List<History> historyData = historyRepository.findBySongId(songData.get(i));
-                    List<PlaylistSong> playlistSongs = playlistsongRepo.findBySong(songData.get(i));
-                    if(historyData!=null){
-                        for(int j=0;j<historyData.size();j++){
-                            historyRepository.deleteById(historyData.get(j).getId());
-                        }
-                    }
-
-                    if(playlistSongs!=null){
-                        for(int j=0;j<playlistSongs.size();j++){
-                            playlistsongRepo.deleteById(playlistSongs.get(j).getId());
-                        }
-                    }
-                    songRepo.deleteById(songData.get(i).getId());
+                    deleteSong(songData.get(i).getId());
                 };
             }
             albumRepository.deleteById(id);
