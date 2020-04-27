@@ -12,21 +12,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-
 import com.example.Spotify.entities.Album;
 import com.example.Spotify.entities.Label;
+import com.example.Spotify.entities.PlaylistSong;
 import com.example.Spotify.entities.Artist;
+import com.example.Spotify.entities.History;
 import com.example.Spotify.entities.Song;
 import com.example.Spotify.repositories.AlbumRepository;
 import com.example.Spotify.repositories.LabelRepository;
+import com.example.Spotify.repositories.PlaylistSongRepository;
 import com.example.Spotify.repositories.ArtistRepository;
+import com.example.Spotify.repositories.HistoryRepository;
 import com.example.Spotify.repositories.SongRepository;
 import com.example.Spotify.controller.MusicController;
 
 import java.util.List;
 
 @Controller // This means that this class is a Controller
-@RequestMapping(path="/spotif") // This means URL's start with /demo (after Application path)
+@RequestMapping(path = "/spotif") // This means URL's start with /demo (after Application path)
 public class AlbumController {
     @Autowired
     private AlbumRepository albumRepository;
@@ -37,8 +40,14 @@ public class AlbumController {
     @Autowired
     private LabelRepository labelRepo;
 
-    @Autowired 
+    @Autowired
     private SongRepository songRepo;
+
+    @Autowired
+    private HistoryRepository historyRepository;
+
+    @Autowired
+    private PlaylistSongRepository playlistsongRepo;
 
     private MusicController songController;
 
@@ -110,7 +119,20 @@ public class AlbumController {
             List<Song> songData = songRepo.findByAlbum(albumData);
             if(songData != null){
                 for(int i=0;i<songData.size();i++){
-                    songController.deleteSong(songData.get(i).getId());
+                    List<History> historyData = historyRepository.findBySongId(songData.get(i));
+                    List<PlaylistSong> playlistSongs = playlistsongRepo.findBySong(songData.get(i));
+                    if(historyData!=null){
+                        for(int j=0;j<historyData.size();j++){
+                            historyRepository.deleteById(historyData.get(j).getId());
+                        }
+                    }
+
+                    if(playlistSongs!=null){
+                        for(int j=0;j<playlistSongs.size();j++){
+                            playlistsongRepo.deleteById(playlistSongs.get(j).getId());
+                        }
+                    }
+                    songRepo.deleteById(songData.get(i).getId());
                 };
             }
             albumRepository.deleteById(id);
