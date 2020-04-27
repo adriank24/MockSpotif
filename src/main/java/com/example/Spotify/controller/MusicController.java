@@ -139,7 +139,7 @@ public class MusicController {
 
     //play lagu
     @PutMapping(path="/song/play/{name}")
-    public @ResponseBody ResponseEntity<Song> playSong(@PathVariable String name, @RequestParam String email){
+    public @ResponseBody ResponseEntity<History> playSong(@PathVariable String name, @RequestParam String email){
         try {
             User userData= userRepository.findByEmail(email).get(0);
             List<Song> song = songRepository.findByName(name);
@@ -147,20 +147,21 @@ public class MusicController {
             Integer temp = songData.getPlayed();
             songData.setPlayed(temp+1);
             songRepository.save(songData);
-            History history = historyRepository.findByUserIdAndSongId(userData, songData.getId());
+            History history = historyRepository.findByUserIdAndSongId(userData, songData);
 
             if(history!=null){
                 Integer tempHist = history.getTimePlayed();
                 history.setTimePlayed(tempHist+1);
                 historyRepository.save(history);
+                return ResponseEntity.ok(history);
             }else {
                 History newHistory = new History();
                 newHistory.setSongId(songData);
                 newHistory.setTimePlayed(1);
                 newHistory.setUserId(userData);
                 historyRepository.save(newHistory);
+                return ResponseEntity.ok(newHistory);
             }
-            return ResponseEntity.ok().build();
           }catch (Exception e) {
             return ResponseEntity.notFound().build();
           }
