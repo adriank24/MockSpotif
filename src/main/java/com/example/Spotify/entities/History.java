@@ -20,7 +20,9 @@ public class History {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private Integer timePlayed;
-    private Integer songId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name= "songId", nullable = false)
+    private Song songId;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name= "userId", nullable = false)
@@ -50,11 +52,11 @@ public class History {
         this.timePlayed = timePlayed;
     }
 
-    public Integer getSongId() {
+    public Song getSongId() {
         return this.songId;
     }
 
-    public void setSongId(Integer songId) {
+    public void setSongId(Song songId) {
         this.songId = songId;
     }
 }

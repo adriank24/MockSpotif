@@ -155,7 +155,7 @@ public class MusicController {
                 historyRepository.save(history);
             }else {
                 History newHistory = new History();
-                newHistory.setSongId(songData.getId());
+                newHistory.setSongId(songData);
                 newHistory.setTimePlayed(1);
                 newHistory.setUserId(userData);
                 historyRepository.save(newHistory);
